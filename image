@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>JPEG zu PNG Konverter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        #output {
+            margin-top: 20px;
+        }
+        #downloadLink {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>JPEG zu PNG Konverter</h1>
+<input type="file" id="fileInput" accept="image/jpeg">
+<div id="output"></div>
+<a id="downloadLink" href="#" download="converted.png">PNG herunterladen</a>
+
+<script>
+document.getElementById('fileInput').addEventListener('change', function(event) {
+    let file = event.target.files[0];
+
+    if (file && file.type === 'image/jpeg') {
+        let reader = new FileReader();
+
+        reader.onload = function(e) {
+            let img = new Image();
+            img.onload = function() {
+                let canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+
+                let ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                let pngDataUrl = canvas.toDataURL('image/png');
+
+                // Ausgabe des Bildes
+                document.getElementById('output').innerHTML = '<img src="' + pngDataUrl + '">';
+
+                // Download-Link erstellen
+                let downloadLink = document.getElementById('downloadLink');
+                downloadLink.href = pngDataUrl;
+                downloadLink.style.display = 'inline';
+            };
+            img.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        alert('Bitte wähle eine JPEG-Datei aus.');
+    }
+});
+</script>
+
+</body>
+</html>
